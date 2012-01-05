@@ -1944,7 +1944,9 @@ ngx_http_upload_merge_ranges(ngx_http_upload_ctx_t *u, ngx_http_upload_range_t *
     }
 
     if(out_buf.file_pos < state_file->info.st_size) {
-        ftruncate(state_file->fd, out_buf.file_pos);
+        if(ftruncate(state_file->fd, out_buf.file_pos)) {
+          // satisfy gcc 4.6.x that is paranoid about ignored return values
+	}
     }
 
     rc = ms.complete_ranges ? NGX_OK : NGX_AGAIN;
